@@ -1,3 +1,5 @@
-const message = 'Hello world';
+import { initMongoConnection } from "./db/initMongoConnection";
+import { setupServer } from "./server";
 
-console.log(message);
+initMongoConnection()
+    .then(setupServer());
