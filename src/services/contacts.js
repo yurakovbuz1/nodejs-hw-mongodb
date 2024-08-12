@@ -1,31 +1,23 @@
-import { model, Schema } from "mongoose";
+import { ContactsCollection } from "../db/models/contacts.js";
 
-const contactSchema = new Schema({
-	name: {
-		type: String,
-		required: true,
-	},
-	phoneNumber: {
-		type: String,
-		required: true,
-	},
-	email: {
-		type: String,
-        required: false,
-    },
-    isFavourite: {
-        type: Boolean,
-        required: true,
-        default: false
-    },
-    contactType: {
-        type: String,
-        enum: ["work", "home", "personal"],
-        required: true,
-        default: "personal"
+export const getAllContacts = async (req, res) => {
+    try {
+        const contacts = await ContactsCollection.find();
+        res.send({ status: 200, message: "Successfully found contacts!", data: contacts });
+    } catch (error) {
+        res.status(500).send({ status: 500, message: "Internal Server Error:", error });
     }
-    }, {
-        timestamp: true
-});
+};
 
-export const ContactsCollection = model('contacts', contactSchema);
+export const getOneContact = async (req, res) => {
+    try {
+        const { contactId } = req.params;
+        const contact = await ContactsCollection.findById(contactId);
+        if (contact === null) {
+            return res.status(404).send({ message: "Contact not found" });
+        }
+        res.send({ status: 200, message: `Successfully found contact with id ${contactId}`, data: contact });
+    } catch (error) {
+        res.status(500).send({ status: 500, message: "Internal Server Error", error });
+    }
+};
