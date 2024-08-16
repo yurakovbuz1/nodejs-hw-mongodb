@@ -11,10 +11,11 @@ const bootstrap = async () => {
         app.listen(PORT, () => {
             console.log(`Server is running on port ${PORT}`);
         });
+
+
     } catch (error) {
         console.error(error);
     }
 };
 
 bootstrap();
-// export { setupServer };

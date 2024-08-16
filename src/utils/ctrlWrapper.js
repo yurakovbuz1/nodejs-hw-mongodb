@@ -3,7 +3,8 @@ function ctrlWrapper(controller) {
         try {
             await controller(req, res, next);
         } catch (error) {
-            console.error(error);                   // use next(createHttpError)
+            next(error);
+            // console.error(error);
         }
     };
 }
