@@ -4,6 +4,7 @@ import {
   deleteContact,
   getContacts,
   getOneContact,
+  patchContact,
 } from '../services/contacts.js';
 
 export async function getContactsController(req, res, next) {
@@ -41,6 +42,17 @@ export async function createNewContactController(req, res, next) {
     status: 201,
     message: 'Successfully created a contact!',
     data: response,
+  });
+}
+
+export async function patchContactController(req, res, next) {
+  const { contactId } = req.params;
+  const payload = req.body;
+  const patchedContact = await patchContact(contactId, payload);
+  res.status(200).send({
+    status: 200,
+    message: 'Successfully patched a contact!',
+    data: patchedContact,
   });
 }
 

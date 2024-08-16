@@ -15,3 +15,9 @@ export function createContact(payload) {
 export function deleteContact(contactId) {
   return ContactsCollection.findByIdAndDelete(contactId);
 }
+
+export function patchContact(contactId, payload) {
+  return ContactsCollection.findByIdAndUpdate(contactId, payload, {
+    new: true,
+  });
+}
