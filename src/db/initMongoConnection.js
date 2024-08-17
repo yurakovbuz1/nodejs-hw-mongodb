@@ -1,7 +1,7 @@
 import { mongoose} from "mongoose";
 
 async function initMongoConnection() {
-	try {
+        try {
         const user = process.env.MONGODB_USER;
         const pwd = process.env.MONGODB_PASSWORD;
         const url = process.env.MONGODB_URL;
@@ -12,7 +12,7 @@ async function initMongoConnection() {
         );
         console.log("Mongo connection successfully established!");
 	} catch (error) {
-		console.error('Error while setting up mongo connection', error);
+	        console.error('Error while setting up mongo connection', error);
 		throw(error);
 	}
 }
