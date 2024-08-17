@@ -22,6 +22,7 @@ export async function getOneContactController(req, res, next) {
   if (contact === null) {
     return next(createHttpError(404, 'Contact not found.'));
   }
+
   res.send({
     status: 200,
     message: `Successfully found contact with id ${contactId}`,
@@ -37,6 +38,7 @@ export async function createNewContactController(req, res, next) {
     isFavourite: req.body.isFavourite,
     contactType: req.body.contactType,
   };
+
   const response = await createContact(contact);
   res.status(201).send({
     status: 201,
