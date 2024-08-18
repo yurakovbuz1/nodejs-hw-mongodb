@@ -13,7 +13,6 @@ function parseSortBy(param) {
     'email',
     'contactType',
   ];
-  console.log(param);
   if (keys.includes(param)) {
     return param;
   }
