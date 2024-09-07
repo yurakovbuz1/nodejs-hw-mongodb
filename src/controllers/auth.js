@@ -1,7 +1,12 @@
-import { registerNewUser } from '../services/auth.js';
+import {
+  registerNewUser,
+  loginUser,
+  refreshUserSession,
+  logoutUser,
+} from '../services/auth.js';
 
 export async function registerNewUserController(req, res, next) {
-  console.log('req :>>', req.body);
+  // console.log('req :>>', req.body);
   const user = {
     name: req.body.name,
     email: req.body.email,
@@ -14,5 +19,68 @@ export async function registerNewUserController(req, res, next) {
     status: 201,
     message: 'Successfully registered a user!',
     data: userCreated,
+  });
+}
+
+export async function loginUserController(req, res, next) {
+  const user = {
+    email: req.body.email,
+    password: req.body.password,
+  };
+
+  const session = await loginUser(user);
+
+  res.cookie('refreshToken', session.refreshToken, {
+    httpOnly: true,
+    expires: session.refreshTokenValidUntil,
+  });
+
+  res.cookie('sessionId', session._id, {
+    httpOnly: true,
+    expires: session.refreshTokenValidUntil,
+  });
+
+  res.send({
+    status: 200,
+    message: 'Successfully logged in an user!',
+    data: {
+      accessToken: session.accessToken,
+    },
+  });
+}
+
+export async function logoutUserController(req, res, next) {
+  const { sessionId } = req.cookies;
+  console.log('sessionId :>> ', sessionId);
+  if (typeof sessionId === 'string') {
+    await logoutUser(sessionId);
+    res.clearCookie('userId');
+    res.clearCookie('refreshToken');
+    res.status(204).end();
+  }
+}
+
+export async function refreshUserSessionController(req, res, next) {
+  console.log(req.cookies);
+  const { sessionId, refreshToken } = req.cookies;
+
+  const refreshedSession = await refreshUserSession(sessionId, refreshToken);
+
+  res.cookie('refreshToken', refreshedSession.refreshToken, {
+    httpOnly: true,
+    expires: refreshedSession.refreshTokenValidUntil,
+  });
+
+  res.cookie('sessionId', refreshedSession._id, {
+    httpOnly: true,
+    expires: refreshedSession.refreshTokenValidUntil,
+  });
+
+  res.send({
+    status: 200,
+    message: 'Successfully refreshed a session!',
+    data: {
+      accessToken: refreshedSession.accessToken,
+    },
   });
 }

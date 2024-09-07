@@ -20,6 +20,7 @@ export async function getContactsController(req, res, next) {
     sortBy,
     sortOrder,
     filter,
+    userId: req.user._id,
   });
   res.send({
     status: 200,
@@ -30,9 +31,15 @@ export async function getContactsController(req, res, next) {
 
 export async function getOneContactController(req, res, next) {
   const { contactId } = req.params;
+
   const contact = await getOneContact(contactId);
+
   if (contact === null) {
     return next(createHttpError(404, 'Contact not found.'));
+  }
+
+  if (contact.userId.toString() !== req.user._id) {
+    return next(createHttpError(401, 'Student not allowed'));
   }
 
   res.send({
@@ -44,6 +51,7 @@ export async function getOneContactController(req, res, next) {
 
 export async function createNewContactController(req, res, next) {
   const contact = {
+    userId: req.user._id,
     name: req.body.name,
     phoneNumber: req.body.phoneNumber,
     email: req.body.email,
