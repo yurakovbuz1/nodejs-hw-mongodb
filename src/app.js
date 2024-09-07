@@ -6,6 +6,7 @@ import authRouter from './routes/auth.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import cookieParser from 'cookie-parser';
+import { authenticate } from './middlewares/authenticate.js';
 
 const app = express();
 
@@ -21,7 +22,7 @@ app.use(
 
 app.use(cookieParser());
 
-app.use('/contacts', contactsRouter);
+app.use('/contacts', authenticate, contactsRouter);
 
 app.use('/auth', authRouter);
 
