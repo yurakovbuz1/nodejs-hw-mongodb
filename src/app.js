@@ -5,6 +5,7 @@ import contactsRouter from './routes/contacts.js';
 import authRouter from './routes/auth.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import { errorHandler } from './middlewares/errorHandler.js';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 
@@ -17,6 +18,8 @@ app.use(
     },
   }),
 );
+
+app.use(cookieParser());
 
 app.use('/contacts', contactsRouter);
 

@@ -29,4 +29,4 @@ const sessionSchema = new mongoose.Schema(
   },
 );
 
-export const SessionsCollection = model('session', sessionSchema);
+export const SessionsCollection = model('Session', sessionSchema);

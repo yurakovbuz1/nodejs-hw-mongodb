@@ -1,4 +1,4 @@
-import { SORT_ORDER } from '../constants/sortOrder.js';
+import { SORT_ORDER } from '../constants/constants.js';
 
 function parseSortBy(param) {
   if (typeof param !== 'string') {
