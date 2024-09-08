@@ -58,7 +58,7 @@ export function deleteContact(contactId, userId) {
 }
 
 export function patchContact(contactId, userId, payload) {
-  return ContactsCollection.findoneAndUpdate(
+  return ContactsCollection.findOneAndUpdate(
     { _id: contactId, userId },
     payload,
     {
