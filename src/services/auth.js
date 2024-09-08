@@ -2,8 +2,13 @@ import createHttpError from 'http-errors';
 import { UsersCollection } from '../db/models/user.js';
 import { SessionsCollection } from '../db/models/session.js';
 import crypto from 'node:crypto';
-import { ACCESS_TOKEN_TTL, REFRESH_TOKEN_TTL } from '../constants/constants.js';
+import {
+  ACCESS_TOKEN_TTL,
+  REFRESH_TOKEN_TTL,
+  SMTP,
+} from '../constants/constants.js';
 import bcrypt from 'bcrypt';
+import { sendMail } from '../utils/sendMail.js';
 
 export async function registerNewUser(user) {
   const result = await UsersCollection.findOne({ email: user.email });
@@ -68,5 +73,20 @@ export async function refreshUserSession(sessionId, refreshToken) {
     refreshToken: newRefreshToken,
     accessTokenValidUntil: new Date(Date.now() + ACCESS_TOKEN_TTL),
     refreshTokenValidUntil: new Date(Date.now() + REFRESH_TOKEN_TTL),
+  });
+}
+
+export async function requestResetEmail(email) {
+  const user = await UsersCollection.findOne({ email });
+
+  if (user === null) {
+    throw createHttpError(404, 'Email not found');
+  }
+
+  await sendMail({
+    from: SMTP.FROM,
+    to: email,
+    subject: 'Reset your password',
+    html: '<h1>Reset your password</h1>',
   });
 }
