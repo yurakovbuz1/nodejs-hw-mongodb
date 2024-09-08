@@ -10,6 +10,7 @@ import {
 import bcrypt from 'bcrypt';
 import { sendMail } from '../utils/sendMail.js';
 import jwt from 'jsonwebtoken';
+import { validateCode } from '../utils/googleOAuth2.js';
 
 export async function registerNewUser(user) {
   const result = await UsersCollection.findOne({ email: user.email });
@@ -141,4 +142,45 @@ export async function resetPassword(token, password) {
     }
     throw error;
   }
+}
+
+export async function loginOrRegisterWithGoogle(code) {
+  const ticket = await validateCode(code);
+  console.log('ticket :>> ', ticket);
+
+  const payload = ticket.getPayload();
+  if (typeof payload === 'undefined') {
+    throw createHttpError(401, 'Unauthorized');
+  }
+
+  const user = await UsersCollection.findOne({ email: payload.email });
+
+  const password = await bcrypt.hash(
+    crypto.randomBytes(30).toString('base64'),
+    10,
+  );
+
+  if (user === null) {
+    const createdUser = await UsersCollection.create({
+      email: payload.email,
+      name: payload.name,
+      password,
+    });
+    return await SessionsCollection.create({
+      userId: createdUser._id,
+      accessToken: crypto.randomBytes(30).toString('base64'),
+      refreshToken: crypto.randomBytes(30).toString('base64'),
+      accessTokenValidUntil: new Date(Date.now() + ACCESS_TOKEN_TTL),
+      refreshTokenValidUntil: new Date(Date.now() + REFRESH_TOKEN_TTL),
+    });
+  }
+  await SessionsCollection.deleteOne({ userId: user._id });
+
+  return SessionsCollection.create({
+    userId: user._id,
+    accessToken: crypto.randomBytes(30).toString('base64'),
+    refreshToken: crypto.randomBytes(30).toString('base64'),
+    accessTokenValidUntil: new Date(Date.now() + ACCESS_TOKEN_TTL),
+    refreshTokenValidUntil: new Date(Date.now() + REFRESH_TOKEN_TTL),
+  });
 }
