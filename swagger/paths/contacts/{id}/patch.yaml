@@ -1,0 +1,56 @@
+tags:
+  -  Contacts
+summary: update contact by id
+operationId: updateContact
+description: "Update single contact by id"
+security:
+  - bearerAuth: []
+parameters:
+  - name: id
+    in: path
+    required: true
+    schema:
+      type: string
+      example: 66ddb5851da98e06ed65eba3
+responses:
+  '200':
+    description: 'Contact by id updated'
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: "Successfully patched a contact!"
+            data:
+              $ref: '../../../components/schemas/contact.yaml'
+  '401':
+    $ref: '../../../components/responses/401.yaml'
+  '404':
+    description: 'Contact not found'
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 404
+            message:
+              type: string
+              example: "Contact with {id} is not found"
+            data:
+              type: object
+              example: {}

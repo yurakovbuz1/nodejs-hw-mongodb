@@ -8,10 +8,13 @@ import { errorHandler } from './middlewares/errorHandler.js';
 import cookieParser from 'cookie-parser';
 import { authenticate } from './middlewares/authenticate.js';
 import path from 'node:path';
+import { swaggerDocs } from './middlewares/swaggerDocs.js';
 
 const app = express();
 
 app.use(cors());
+
+app.use('/api-docs', swaggerDocs());
 
 app.use('/avatars', express.static(path.resolve('src', 'public/avatars')));
 
