@@ -45,8 +45,8 @@ export async function getContacts({
   };
 }
 
-export function getOneContact(contactId) {
-  return ContactsCollection.findById(contactId);
+export function getOneContact(contactId, userId) {
+  return ContactsCollection.findOne({ _id: contactId, userId });
 }
 
 export function createContact(payload) {
