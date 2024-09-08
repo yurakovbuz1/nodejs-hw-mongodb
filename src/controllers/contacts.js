@@ -30,7 +30,7 @@ export async function getContactsController(req, res, next) {
 }
 
 export async function getOneContactController(req, res, next) {
-  const { userId } = req.user._id;
+  const userId = req.user._id;
   const { contactId } = req.params;
 
   const contact = await getOneContact(contactId, userId);
@@ -39,7 +39,7 @@ export async function getOneContactController(req, res, next) {
     return next(createHttpError(404, 'Contact not found.'));
   }
 
-  if (contact.userId.toString() !== req.user._id) {
+  if (contact.userId.toString() !== req.user._id.toString()) {
     return next(createHttpError(401, 'Student not allowed'));
   }
 
@@ -81,7 +81,7 @@ export async function patchContactController(req, res, next) {
 }
 
 export async function deleteContactController(req, res, next) {
-  const { userId } = req.user._id;
+  const userId = req.user._id;
   const { contactId } = req.params;
   const deleted = await deleteContact(contactId, userId);
   if (deleted === null) {
