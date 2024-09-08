@@ -1,3 +1,4 @@
+import path from 'path';
 import createHttpError from 'http-errors';
 import {
   createContact,
@@ -9,6 +10,8 @@ import {
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
+import { uploadToCloud } from '../utils/uploadToCloud.js';
+import * as fs from 'node:fs';
 
 export async function getContactsController(req, res, next) {
   const { page, perPage } = parsePaginationParams(req.query);
@@ -51,6 +54,25 @@ export async function getOneContactController(req, res, next) {
 }
 
 export async function createNewContactController(req, res, next) {
+  let photo = null;
+  if (process.env.ENABLE_CLOUDINARY === 'true') {
+    const result = await uploadToCloud(req.file.path);
+
+    photo = result.secure_url;
+  } else {
+    fs.rename(
+      req.file.path,
+      path.resolve('src', 'public/avatars', req.file.filename),
+      (err) => {
+        if (err) {
+          console.error('Error renaming file:', err);
+          return;
+        }
+      },
+    );
+    photo = `http://localhost:3000/avatars/${req.file.filename}`;
+  }
+
   const contact = {
     userId: req.user._id,
     name: req.body.name,
@@ -58,6 +80,7 @@ export async function createNewContactController(req, res, next) {
     email: req.body.email,
     isFavourite: req.body.isFavourite,
     contactType: req.body.contactType,
+    photo,
   };
 
   const response = await createContact(contact);
@@ -69,7 +92,7 @@ export async function createNewContactController(req, res, next) {
 }
 
 export async function patchContactController(req, res, next) {
-  const { userId } = req.user._id;
+  const userId = req.user._id;
   const { contactId } = req.params;
   const payload = req.body;
   const patchedContact = await patchContact(contactId, userId, payload);
