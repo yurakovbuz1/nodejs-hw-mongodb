@@ -7,10 +7,13 @@ import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import cookieParser from 'cookie-parser';
 import { authenticate } from './middlewares/authenticate.js';
+import path from 'node:path';
 
 const app = express();
 
 app.use(cors());
+
+app.use('/avatars', express.static(path.resolve('src', 'public/avatars')));
 
 app.use(
   pinoHTTP({

@@ -53,12 +53,16 @@ export function createContact(payload) {
   return ContactsCollection.create(payload);
 }
 
-export function deleteContact(contactId) {
-  return ContactsCollection.findByIdAndDelete(contactId);
+export function deleteContact(contactId, userId) {
+  return ContactsCollection.findOneAndDelete({ _id: contactId, userId });
 }
 
-export function patchContact(contactId, payload) {
-  return ContactsCollection.findByIdAndUpdate(contactId, payload, {
-    new: true,
-  });
+export function patchContact(contactId, userId, payload) {
+  return ContactsCollection.findoneAndUpdate(
+    { _id: contactId, userId },
+    payload,
+    {
+      new: true,
+    },
+  );
 }

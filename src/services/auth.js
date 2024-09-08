@@ -19,14 +19,14 @@ export async function registerNewUser(user) {
   }
 
   const plainPassword = user.password;
-  user.password = await bcrypt.hash(plainPassword, 5); // 5?
+  user.password = await bcrypt.hash(plainPassword, 10);
 
   return UsersCollection.create(user);
 }
 
 export async function loginUser(user) {
   const maybeUser = await UsersCollection.findOne({ email: user.email });
-  const correctPass = await bcrypt.compare(user.password, maybeUser.password); // output - ?
+  const correctPass = await bcrypt.compare(user.password, maybeUser.password);
   if (correctPass === false) {
     throw createHttpError(401, 'Unauthorised');
   }
