@@ -7,7 +7,7 @@ import {
   patchContactController,
 } from '../controllers/contacts.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
-import { contactsSchema } from '../validation/contacts.js';
+import { contactsSchema, patchSchema } from '../validation/contacts.js';
 import { validateBody } from '../middlewares/validateBody.js';
 import { isValidId } from '../middlewares/isValidId.js';
 import { upload } from '../middlewares/upload.js';
@@ -24,6 +24,7 @@ router.post(
   '/',
   jsonParser,
   upload.single('photo'),
+  validateBody(contactsSchema),
   ctrlWrapper(createNewContactController),
 );
 
@@ -32,7 +33,7 @@ router.patch(
   isValidId,
   jsonParser,
   upload.single('photo'),
-  validateBody(contactsSchema),
+  validateBody(patchSchema),
   ctrlWrapper(patchContactController),
 );
 
