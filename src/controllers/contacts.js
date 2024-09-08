@@ -74,7 +74,6 @@ export async function createNewContactController(req, res, next) {
       photo = `http://localhost:3000/avatars/${req.file.filename}`;
     }
   }
-
   const contact = {
     userId: req.user._id,
     name: req.body.name,
