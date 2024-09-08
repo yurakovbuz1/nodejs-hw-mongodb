@@ -57,23 +57,23 @@ export async function getOneContactController(req, res, next) {
 export async function createNewContactController(req, res, next) {
   let photo = null;
   if (typeof req.file !== 'undefined') {
-    if (process.env.ENABLE_CLOUDINARY === 'true') {
-      const result = await uploadToCloud(req.file.path);
+    // if (process.env.ENABLE_CLOUDINARY === 'true') {
+    const result = await uploadToCloud(req.file.path);
 
-      photo = result.secure_url;
-    } else {
-      fs.rename(
-        req.file.path,
-        path.resolve('src', 'public/avatars', req.file.filename),
-        (err) => {
-          if (err) {
-            console.error('Error renaming file:', err);
-            return;
-          }
-        },
-      );
-      photo = `http://localhost:3000/avatars/${req.file.filename}`;
-    }
+    photo = result.secure_url;
+    // } else {
+    //   fs.rename(
+    //     req.file.path,
+    //     path.resolve('src', 'public/avatars', req.file.filename),
+    //     (err) => {
+    //       if (err) {
+    //         console.error('Error renaming file:', err);
+    //         return;
+    //       }
+    //     },
+    //   );
+    //   photo = `http://localhost:3000/avatars/${req.file.filename}`;
+    // }
   }
 
   const contact = {
