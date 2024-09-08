@@ -122,11 +122,14 @@ export async function resetPassword(token, password) {
       throw createHttpError(404, 'User not found!');
     }
 
-    const hashedPassword = bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    await UsersCollection.findByIdAndUpdate(user._id, {
-      password: hashedPassword,
-    });
+    const newPassUser = await UsersCollection.findOneAndUpdate(
+      { _id: user._id },
+      { password: hashedPassword },
+    );
+
+    console.log(newPassUser);
 
     await SessionsCollection.deleteOne({ userId: user._id });
   } catch (error) {
@@ -136,5 +139,6 @@ export async function resetPassword(token, password) {
     ) {
       throw createHttpError(401, 'Token is expired or invalid.');
     }
+    throw error;
   }
 }
