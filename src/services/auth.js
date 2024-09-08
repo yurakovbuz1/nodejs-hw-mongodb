@@ -25,8 +25,8 @@ export async function registerNewUser(user) {
 
 export async function loginUser(user) {
   const maybeUser = await UsersCollection.findOne({ email: user.email });
-  const correctPass = bcrypt.compare(user.password, maybeUser.password); // output - ?
-  if (correctPass === null) {
+  const correctPass = await bcrypt.compare(user.password, maybeUser.password); // output - ?
+  if (correctPass === false) {
     throw createHttpError(401, 'Unauthorised');
   }
   await SessionsCollection.deleteOne({ userId: maybeUser._id });
