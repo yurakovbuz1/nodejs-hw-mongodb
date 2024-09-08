@@ -69,9 +69,10 @@ export async function createNewContactController(req, res, next) {
 }
 
 export async function patchContactController(req, res, next) {
+  const { userId } = req.user._id;
   const { contactId } = req.params;
   const payload = req.body;
-  const patchedContact = await patchContact(contactId, payload);
+  const patchedContact = await patchContact(contactId, userId, payload);
   res.status(200).send({
     status: 200,
     message: 'Successfully patched a contact!',
@@ -80,8 +81,9 @@ export async function patchContactController(req, res, next) {
 }
 
 export async function deleteContactController(req, res, next) {
+  const { userId } = req.user._id;
   const { contactId } = req.params;
-  const deleted = await deleteContact(contactId);
+  const deleted = await deleteContact(contactId, userId);
   if (deleted === null) {
     return next(createHttpError(404, 'Contact not found.'));
   }
