@@ -7,12 +7,15 @@ import {
   logoutUserController,
   requestResetEmailController,
   resetPasswordController,
+  getOauthUrlController,
+  confirmOAuthController,
 } from '../controllers/auth.js';
 import {
   loginSchema,
   registerSchema,
   resetEmailSchema,
   resetPasswordSchema,
+  confirmOAuthSchema,
 } from '../validation/auth.js';
 import { validateBody } from '../middlewares/validateBody.js';
 
@@ -49,6 +52,15 @@ router.post(
   jsonParser,
   validateBody(resetPasswordSchema),
   ctrlWrapper(resetPasswordController),
+);
+
+router.get('/get-oauth-url', ctrlWrapper(getOauthUrlController));
+
+router.get(
+  '/confirm-oauth',
+  jsonParser,
+  validateBody(confirmOAuthSchema),
+  ctrlWrapper(confirmOAuthController),
 );
 
 export default router;
