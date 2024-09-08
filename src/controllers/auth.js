@@ -102,7 +102,7 @@ export async function requestResetEmailController(req, res, next) {
 export async function resetPasswordController(req, res, next) {
   const { token, password } = req.body;
 
-  const response = await resetPassword(token, password);
+  await resetPassword(token, password);
 
   res.send({
     status: 200,
