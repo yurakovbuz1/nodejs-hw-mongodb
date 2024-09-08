@@ -3,6 +3,7 @@ import {
   loginUser,
   refreshUserSession,
   logoutUser,
+  requestResetEmail,
 } from '../services/auth.js';
 
 export async function registerNewUserController(req, res, next) {
@@ -82,5 +83,17 @@ export async function refreshUserSessionController(req, res, next) {
     data: {
       accessToken: refreshedSession.accessToken,
     },
+  });
+}
+
+export async function requestResetEmailController(req, res, next) {
+  const { email } = req.body;
+
+  await requestResetEmail(email);
+
+  res.send({
+    status: 200,
+    message: 'Reset email was sent successfully',
+    data: {},
   });
 }
