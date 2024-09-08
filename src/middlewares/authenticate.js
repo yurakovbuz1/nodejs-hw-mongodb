@@ -13,7 +13,9 @@ export async function authenticate(req, res, next) {
     return next(createHttpError(401, 'Auth header has to be of type Bearer'));
   }
 
-  const session = await SessionsCollection.findOne({ accessToken });
+  const session = await SessionsCollection.findOne({
+    accessToken,
+  });
 
   if (session === null) {
     return next(createHttpError(401, 'Session not found'));
@@ -23,7 +25,9 @@ export async function authenticate(req, res, next) {
     return next(createHttpError(401, 'Access token has expired'));
   }
 
-  const user = await UsersCollection.findOne({ userId: session.userId });
+  const user = await UsersCollection.findOne({ _id: session.userId });
+
+  console.log('user :>> ', user);
   if (user === null) {
     return next(createHttpError(401, 'Session not found'));
   }
