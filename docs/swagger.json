@@ -12,6 +12,9 @@
   "servers": [
     {
       "url": "http://localhost:3000"
+    },
+    {
+      "url": "https://nodejs-hw-mongodb-vj1w.onrender.com"
     }
   ],
   "tags": [
@@ -106,6 +109,58 @@
             }
           }
         ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Contact's name",
+                    "type": "string",
+                    "example": "John Doe"
+                  },
+                  "isFavourite": {
+                    "description": "Shows whether contact is favourite",
+                    "type": "boolean",
+                    "default": false,
+                    "example": true
+                  },
+                  "email": {
+                    "description": "Contact's email",
+                    "type": "string",
+                    "example": "johndoe@mail.com"
+                  },
+                  "phoneNumber": {
+                    "description": "Contact's phone number",
+                    "type": "string",
+                    "example": 380000009
+                  },
+                  "contactType": {
+                    "description": "Type of contact",
+                    "type": "string",
+                    "enum": [
+                      "work",
+                      "home",
+                      "personal"
+                    ],
+                    "example": "work"
+                  },
+                  "userId": {
+                    "description": "ID of user who created the contact",
+                    "type": "string",
+                    "example": "66ddb5851da98e08ed65eba4"
+                  },
+                  "photo": {
+                    "description": "Contact's photo",
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Contact by id updated",
@@ -298,7 +353,7 @@
             }
           },
           {
-            "name": "sort",
+            "name": "sortOrder",
             "in": "query",
             "required": false,
             "schema": {
@@ -429,11 +484,6 @@
                       "personal"
                     ],
                     "example": "work"
-                  },
-                  "userId": {
-                    "description": "ID of user who created the contact",
-                    "type": "string",
-                    "example": "66ddb5851da98e08ed65eba4"
                   },
                   "photo": {
                     "description": "Contact's photo",

@@ -24,7 +24,7 @@ parameters:
     schema:
       type: string
       example: name
-  - name: sort
+  - name: sortOrder
     in: query
     required: false
     schema:
