@@ -34,7 +34,6 @@ export async function getContactsController(req, res, next) {
 
 export async function getOneContactController(req, res, next) {
   const userId = req.user._id;
-  console.log('req :>> ', req.user._id);
   const { contactId } = req.params;
 
   const contact = await getOneContact(contactId, userId);
@@ -57,23 +56,23 @@ export async function getOneContactController(req, res, next) {
 export async function createNewContactController(req, res, next) {
   let photo = null;
   if (typeof req.file !== 'undefined') {
-    // if (process.env.ENABLE_CLOUDINARY === 'true') {
-    const result = await uploadToCloud(req.file.path);
+    if (process.env.ENABLE_CLOUDINARY === 'true') {
+      const result = await uploadToCloud(req.file.path);
 
-    photo = result.secure_url;
-    // } else {
-    //   fs.rename(
-    //     req.file.path,
-    //     path.resolve('src', 'public/avatars', req.file.filename),
-    //     (err) => {
-    //       if (err) {
-    //         console.error('Error renaming file:', err);
-    //         return;
-    //       }
-    //     },
-    //   );
-    //   photo = `http://localhost:3000/avatars/${req.file.filename}`;
-    // }
+      photo = result.secure_url;
+    } else {
+      fs.rename(
+        req.file.path,
+        path.resolve('src', 'public/avatars', req.file.filename),
+        (err) => {
+          if (err) {
+            console.error('Error renaming file:', err);
+            return;
+          }
+        },
+      );
+      photo = `http://localhost:3000/avatars/${req.file.filename}`;
+    }
   }
 
   const contact = {
@@ -95,9 +94,39 @@ export async function createNewContactController(req, res, next) {
 }
 
 export async function patchContactController(req, res, next) {
+  let photo = null;
+  if (typeof req.file !== 'undefined') {
+    if (process.env.ENABLE_CLOUDINARY === 'true') {
+      const result = await uploadToCloud(req.file.path);
+
+      photo = result.secure_url;
+    } else {
+      fs.rename(
+        req.file.path,
+        path.resolve('src', 'public/avatars', req.file.filename),
+        (err) => {
+          if (err) {
+            console.error('Error renaming file:', err);
+            return;
+          }
+        },
+      );
+      photo = `http://localhost:3000/avatars/${req.file.filename}`;
+    }
+  }
+
+  const payload = {
+    userId: req.user._id,
+    name: req.body.name,
+    phoneNumber: req.body.phoneNumber,
+    email: req.body.email,
+    isFavourite: req.body.isFavourite,
+    contactType: req.body.contactType,
+    photo,
+  };
+
   const userId = req.user._id;
   const { contactId } = req.params;
-  const payload = req.body;
   const patchedContact = await patchContact(contactId, userId, payload);
   if (patchedContact === null) {
     next(createHttpError(404, 'Contact not found'));
